@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+ 
+<body>
+    <div class="main-container">
+        <h2 id="heading">Reaming Time:
+            <p id="time"></p>
+        </h2>
+        <div class="container">
+            <div class="grid-container row memory-game" id="cards"></div>
+
+            <div class="controls">
+                <div class="seriesCol">
+                    <div class="seriesrow">
+                        <input id="s2" type="radio" name="chooseSeries" onchange="handleChange(this);" value="2" />
+                        <label for="s2">series of 2 pics</label>
+                    </div>
+                    <div id="" class="seriesrow">
+                        <input id="s3" type="radio" name="chooseSeries" onchange="handleChange(this);" value="3" />
+                        <label for="s3">series of 3 pics</label>
+                    </div>
+                    <div id="" class="seriesrow">
+                        <input id="s4" type="radio" name="chooseSeries" onchange="handleChange(this);" value="4" />
+                        <label for="s4">series of 4 pics</label>
+                    </div>
+                </div>
+
+                <div class="oprateBtn" id="oprBtn">
+                    <button id="newGameBtn" class="btn" onclick="newGame()">New Game</button>
+                    <button id="newShowBtn" class="btn" onclick="showAllCards()">Show</button>
+                    <button id="newHelpBtn" class="btn">Help</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
