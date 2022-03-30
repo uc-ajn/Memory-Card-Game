@@ -1,49 +1,36 @@
-//Random Number  
-let cardList = []
-let seriesType = "0"
+const TOTAL_CARDS = 24;
+const ALLOWED_TIME = 60;
+const SERIES_TWO = document.getElementById("s2")
+const SERIES_THREE = document.getElementById("s3")
+const SERIES_FOUR = document.getElementById("s4")
+let counter = ALLOWED_TIME;
+let card_list = []
+let series_type = "0"
 let data = ""
 let cards = []
-let time = 60;
-let timeOut
-let imageArr = [
-    "./img/card1.png",
-    "./img/card2.png",
-    "./img/card3.png",
-    "./img/card4.png",
-    "./img/card5.png",
-    "./img/card6.png",
-    "./img/card7.png",
-    "./img/card24.png",
-    "./img/card9.png",
-    "./img/card10.png",
-    "./img/card11.png",
-    "./img/card24.png",
-    "./img/card13.png",
-]
+let time_out
 
 function init() {
-    document.getElementById('time').innerHTML = `<span>${time}</span> Seconds`;
+    document.getElementById('time').innerHTML = `<span>${ALLOWED_TIME}</span> Seconds`;
     generateRandomSet(2)
-    if (seriesType == "0") {
+    if (series_type == "0") {
         document.getElementById("newGameBtn").disabled = true;
         document.getElementById("newShowBtn").disabled = true;
     }
-    if (cardList.length > 23) {
-        setCards()
-    }
+    setCards()
 }
 
 function timeCounter() {
-    time -= 1;
-    document.getElementById('time').innerHTML = `<span id="remTime"> ${time} </span> Seconds Remaining`;
-    if (time === 0) {
+    counter -= 1;
+    document.getElementById('time').innerHTML = `<span id="remTime"> ${counter} </span> Seconds Remaining`;
+    if (counter === 0) {
         timeOver()
-    } 
+    }
 }
 
 function timeOver() {
     alert("Time Out. You loose the game!")
-    clearInterval(timeOut);
+    clearInterval(time_out);
     showAllCards()
 }
 
@@ -54,52 +41,50 @@ function getCards() {
 
 function setCards() {
     data = ""
-    for (let i = 0; i < 24; i++) {
-        data += `<div class="memory-card" data-framework="card${cardList[i]}">
-    <img class="front-card" src="img/card${cardList[i]}.png" alt="front image">
+    for (let i = 0; i < TOTAL_CARDS; i++) {
+        data += `<div class="memory-card" data-framework="card${card_list[i]}">
+    <img class="front-card" src="img/card${card_list[i]}.png" alt="front image">
     <img class="back-face" id="img${i}" src="img/game.png" alt="front image">
     </div>`
     }
     document.getElementById("cards").innerHTML = data;
 }
 
-function generateRandomSet(seriesType) {
+function generateRandomSet(series_type) {
     var finalList = []
-    cardList = []
-    for (let i = 0; i < seriesType; i++) {
+    card_list = []
+    for (let i = 0; i < series_type; i++) {
         let subSet = []
-        for (let i = 0; subSet.length < 24 / seriesType; i++) {
-            var r = Math.floor(Math.random() * 24 / seriesType) + 1;
+        for (let i = 0; subSet.length < TOTAL_CARDS / series_type; i++) {
+            var r = Math.floor(Math.random() * TOTAL_CARDS / series_type) + 1;
             if (subSet.indexOf(r) == -1) {
                 subSet.push(r);
             }
         }
         finalList = finalList.concat(subSet)
     }
-    cardList = cardList.concat(finalList)
-    console.log(cardList)
+    card_list = card_list.concat(finalList)
 }
 
 function handleChange(src) {
-    seriesType = src.value
-    generateRandomSet(seriesType)
+    series_type = src.value
+    generateRandomSet(series_type)
     setCards()
     getCards()
     selectSeries(src.value)
 }
 
 function newGame() {
-    time = 60
-    seriesType = "0"
-    clearInterval(timeOut);
+    series_type = "0"
+    clearInterval(time_out);
     var ele = document.getElementsByName("chooseSeries");
     for (var i = 0; i < ele.length; i++) {
         ele[i].checked = false;
     }
-    document.getElementById("s2").disabled = false;
-    document.getElementById("s3").disabled = false;
-    document.getElementById("s4").disabled = false;
-    document.getElementById('time').innerHTML = `<span>${time}</span> Seconds`;
+    SERIES_TWO.disabled = false;
+    SERIES_THREE.disabled = false;
+    SERIES_FOUR.disabled = false;
+    document.getElementById('time').innerHTML = `<span>${ALLOWED_TIME}</span> Seconds`;
     document.getElementById("newShowBtn").disabled = true;
     hideAllCards()
     cards.forEach(card => card.removeEventListener('click', flipCard))
@@ -110,7 +95,7 @@ function showAllCards() {
     for (let i = 0; i < cards.length; i++) {
         cards[i].className += " flip";
     }
-    clearInterval(timeOut);
+    clearInterval(time_out);
 }
 
 function hideAllCards() {
@@ -125,71 +110,77 @@ function selectSeries(type) {
     if (type != 0) {
         document.getElementById("newGameBtn").disabled = false;
         document.getElementById("newShowBtn").disabled = false;
-        document.getElementById("s2").disabled = true;
-        document.getElementById("s3").disabled = true;
-        document.getElementById("s4").disabled = true;
-        timeOut = setInterval(timeCounter, 1000);
+        SERIES_TWO.disabled = true;
+        SERIES_THREE.disabled = true;
+        SERIES_FOUR.disabled = true;
+        time_out = setInterval(timeCounter, 1000);
     }
 }
 
-let hasflippedCard = 1;
-let lockBoard = false;
-let firstCard, secondCard, thirdCard, fourthCard;
+let flip_card = 1;
+let lock_board = false;
+let cards_to_match = {}
 
 function flipCard() {
     this.classList.add('flip');
-    if (seriesType == 2) {
-        if (hasflippedCard == 1) {
-            hasflippedCard = 2;
-            firstCard = this;
-        } else if (hasflippedCard == 2) {
-            hasflippedCard = 1;
-            secondCard = this;
-            checkForMatch()
-        }
-    } else if (seriesType == 3) {
-        if (hasflippedCard == 1) {
-            hasflippedCard = 2;
-            firstCard = this;
-        } else if (hasflippedCard == 2) {
-            hasflippedCard = 3;
-            secondCard = this;
-            checkForMatch()
-        } else if (hasflippedCard == 3) {
-            hasflippedCard = 1;
-            thirdCard = this;
-            checkForMatch()
-        }
-    } else if (seriesType == 4) {
-        if (hasflippedCard == 1) {
-            hasflippedCard = 2;
-            firstCard = this;
-        } else if (hasflippedCard == 2) {
-            hasflippedCard = 3;
-            secondCard = this;
-            checkForMatch()
-        } else if (hasflippedCard == 3) {
-            hasflippedCard = 4;
-            thirdCard = this;
-            checkForMatch()
-        } else if (hasflippedCard == 4) {
-            hasflippedCard = 1;
-            fourthCard = this;
-            checkForMatch()
-        }
+    switch (series_type) {
+        case "2":
+            if (flip_card == 1) {
+                flip_card = 2;
+                cards_to_match = {[series_type]:[this]}
+            } else if (flip_card == 2) {
+                flip_card = 1;
+                cards_to_match[series_type].push(this)
+                checkForMatch()
+            }
+            break;
+        case "3":
+            if (flip_card == 1) {
+                flip_card = 2;
+                cards_to_match = {[series_type]:[this]}
+            } else if (flip_card == 2) {
+                flip_card = 3;
+                cards_to_match[series_type].push(this)
+                checkForMatch()
+            } else if (flip_card == 3) {
+                flip_card = 1;
+                cards_to_match[series_type].push(this)
+                checkForMatch()
+            }
+            break;
+        case "4":
+            if (flip_card == 1) {
+                flip_card = 2;
+                cards_to_match = {[series_type]:[this]}
+            } else if (flip_card == 2) {
+                flip_card = 3;
+                cards_to_match[series_type].push(this)
+                checkForMatch()
+            } else if (flip_card == 3) {
+                flip_card = 4;
+                cards_to_match[series_type].push(this)
+                checkForMatch()
+            } else if (flip_card == 4) {
+                flip_card = 1;
+                cards_to_match[series_type].push(this)
+                checkForMatch()
+            }
+            break;
+            default: 
+                console.log("Please Select series type");
     }
 }
 
 function checkForMatch() {
-    if (seriesType == 2) {
-        if (firstCard.dataset.framework === secondCard.dataset.framework) {
+    if (series_type == 2 && cards_to_match[series_type].length>1) {
+        if (cards_to_match[series_type][0].dataset.framework === cards_to_match[series_type][1].dataset.framework) {
             disableCard();
         } else {
             unFlipCard()
         }
-    } else if (seriesType == 3) {
-        if (firstCard.dataset.framework === secondCard.dataset.framework) {
-            if (firstCard.dataset.framework === thirdCard.dataset.framework) {
+    } else if (series_type == 3) {
+        if (cards_to_match[series_type][0].dataset.framework === cards_to_match[series_type][1].dataset.framework) {
+            if (cards_to_match[series_type][0].dataset.framework === cards_to_match[series_type][2].dataset.framework) {
                 disableCard();
             } else {
                 unFlipCard()
@@ -197,10 +188,10 @@ function checkForMatch() {
         } else {
             unFlipCard()
         }
-    } else if (seriesType == 4) {
-        if (firstCard.dataset.framework === secondCard.dataset.framework) {
-            if (firstCard.dataset.framework === thirdCard.dataset.framework) {
-                if (firstCard.dataset.framework === fourthCard.dataset.framework) {
+    } else if (series_type == 4) {
+        if (cards_to_match[series_type][0].dataset.framework === cards_to_match[series_type][1].dataset.framework) {
+            if (cards_to_match[series_type][0].dataset.framework === cards_to_match[series_type][2].dataset.framework) {
+                if (cards_to_match[series_type][0].dataset.framework === cards_to_match[series_type][3].dataset.framework) {
                     disableCard();
                 } else {
                     unFlipCard()
@@ -215,33 +206,45 @@ function checkForMatch() {
 }
 
 function disableCard() {
-    firstCard.removeEventListener('click', flipCard);
-    secondCard.removeEventListener('click', flipCard)
-    if (seriesType == 3) {
-        thirdCard.removeEventListener('click', flipCard)
-    } else if (seriesType == 4) {
-        thirdCard.removeEventListener('click', flipCard)
-        fourthCard.removeEventListener('click', flipCard)
+    cards_to_match[series_type][0].removeEventListener('click', flipCard);
+    cards_to_match[series_type][1].removeEventListener('click', flipCard)
+    if (series_type == 3) {
+        cards_to_match[series_type][2].removeEventListener('click', flipCard)
+    } else if (series_type == 4) {
+        cards_to_match[series_type][2].removeEventListener('click', flipCard)
+        cards_to_match[series_type][3].removeEventListener('click', flipCard)
     }
 
 }
 
 function unFlipCard() {
     setTimeout(() => {
-        firstCard.classList.remove('flip');
-        secondCard.classList.remove('flip');
-        if (seriesType == 3) {
-            thirdCard.classList.remove('flip');
-        } else if (seriesType == 4) {
-            thirdCard.classList.remove('flip');
-            fourthCard.classList.remove('flip');
+        cards_to_match[series_type][0].classList.remove('flip');
+        cards_to_match[series_type][1].classList.remove('flip');
+        if (series_type == 3) {
+            cards_to_match[series_type][2].classList.remove('flip');
+        } else if (series_type == 4) {
+            cards_to_match[series_type][2].classList.remove('flip');
+            cards_to_match[series_type][3].classList.remove('flip');
         }
     }, 500);
 }
 
-function setImage() {
-    for (let index = 0; index < cardList.length; index++) {
-        document.getElementById("img`${index}`").src = imageArr[cardList[index]]
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function () {
+    modal.style.display = "block";
+}
+
+span.onclick = function () {
+    modal.style.display = "none";
+}
+
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
     }
 }
 

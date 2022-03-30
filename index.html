@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
- 
+
 <body>
     <div class="main-container">
         <h2 id="heading">Reaming Time:
@@ -36,7 +36,26 @@
                 <div class="oprateBtn" id="oprBtn">
                     <button id="newGameBtn" class="btn" onclick="newGame()">New Game</button>
                     <button id="newShowBtn" class="btn" onclick="showAllCards()">Show</button>
-                    <button id="newHelpBtn" class="btn">Help</button>
+                    <button id="myBtn" class="btn">Help</button>
+                    <div id="myModal" class="modal">
+
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close">&times;</span>
+                                <h2>Instruction</h2>
+                            </div>
+                            <div class="modal-body">
+                                <h4>The objective is to collect the most pairs of cards.</h4>
+                                <p>On each turn, a player turns over any two, three and four card (one at a time) and
+                                    keeps them if the cards match (for example, two kings, three aces, four queen)</p>
+                                <p>When a player turns over two cards that do not match, those cards are turned face
+                                    down again</p>
+                                <p>The trick is to remember which cards are where.</p>
+                                <p>Maximum time is 60 seconds</p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,3 +64,4 @@
 </body>
 
 </html>
+
